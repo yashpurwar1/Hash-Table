@@ -1,26 +1,43 @@
 package hashTable;
 
+import java.util.ArrayList;
+
 public class HashMap<K, V> {
-	MapNode head;
-	MapNode tail;
-	
+	MapNode<K, V> head;
+	MapNode<K, V> tail;
+	private final int numOfBuckets;
+	ArrayList<MapNode<K, V>> bucketArray;
+
+	public HashMap() {
+		this.numOfBuckets = 10;
+		this.bucketArray = new ArrayList<>(numOfBuckets);
+		// Create empty LinkedLists
+		for (int i = 0; i < numOfBuckets; i++)
+			this.bucketArray.add(null);
+	}
+
 	/*
-	 * Purpose : method to get value from LinkedList
+	 * Purpose : method to get value from LinkedList using index number
 	 */
 
 	public V get(K key) {
+		int index = this.getBucketIndex(key);
+		if (this.bucketArray.get(index) == null)
+			return null;
 		MapNode<K, V> myNode = search(key);
 		return (myNode == null) ? null : myNode.getValue();
 	}
 
 	/*
 	 * Purpose : Method to search the word in LinkedList is
+	 * 
+	 * @param : key to search
+	 *
 	 */
+
 	public MapNode<K, V> search(K key) {
 		MapNode<K, V> currentNode = head;
-		int position = 0;
 		while (currentNode != null) {
-			position++;
 			if (currentNode.getKey().equals(key)) {
 				return currentNode;
 			}
@@ -34,16 +51,31 @@ public class HashMap<K, V> {
 	 * Purpose : Method to add key and value to hash table 
 	 */
 	public void add(K key, V value) {
-		MapNode<K, V> myNode = search(key);
+		int index = this.getBucketIndex(key);
+		MapNode<K, V> myNode = this.bucketArray.get(index);
+		if (myNode == null) {
+			myNode = new MapNode<>(key, value);
+			this.bucketArray.set(index, myNode);
+		}
+		myNode = search(key);
 		if (myNode == null) {
 			myNode = new MapNode<>(key, value);
 			this.append(myNode);
 		} else
 			myNode.setValue(value);
 	}
+
+	public int getBucketIndex(K key) {
+		int hashCode = Math.abs(key.hashCode());
+		int index = hashCode % numOfBuckets;
+		return index;
+		
+	}
+
 	/*
-	 * Purpose : Method to append node 
+	 * Purpose : Method to append value to Linked List
 	 */
+
 	private void append(MapNode<K, V> myNode) {
 		if (this.head == null)
 			this.head = myNode;
@@ -57,6 +89,6 @@ public class HashMap<K, V> {
 
 	@Override
 	public String toString() {
-		return "HashMapNodes{" + head + '}';
+		return "{" + head + '}';
 	}
 }

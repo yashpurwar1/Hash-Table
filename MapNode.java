@@ -39,9 +39,9 @@ public class MapNode<K, V> {
 	@Override
 	public String toString() {
 		StringBuilder nodeString = new StringBuilder();
-		nodeString.append("MyMapNode{" + " Key= ").append(key).append(" Value= ").append(value).append('}');
+		nodeString.append(" Key= ").append(key).append("		Value= ").append(value);
 		if (next != null)
-			nodeString.append("->").append(next);
+			nodeString.append("\n").append(next);
 		return nodeString.toString();
 	}
 }
